@@ -1,6 +1,7 @@
 package com.example.processing.reader;
 
 import com.example.processing.Organization;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.beans.factory.annotation.Value;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 @StepScope
 @Component
+@Slf4j
 public class OrganizationReader extends FlatFileItemReader<Organization> {
 
     public OrganizationReader(
@@ -24,6 +26,7 @@ public class OrganizationReader extends FlatFileItemReader<Organization> {
 
     @Override
     public Organization read() throws Exception {
+        log.info("Reading line, thread: {}", Thread.currentThread().getName());
         return super.read();
     }
 }

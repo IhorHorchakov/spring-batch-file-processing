@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class OrganizationProcessor implements ItemProcessor<Organization, Organization> {
     @Override
     public Organization process(Organization organization) {
-        log.info("Processing in thread name: {}", Thread.currentThread().getName());
+//        log.info("Processing in thread name: {}", Thread.currentThread().getName());
 
         // emulating a business logic process
         return convert(organization);

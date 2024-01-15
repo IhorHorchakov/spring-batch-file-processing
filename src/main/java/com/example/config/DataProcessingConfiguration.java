@@ -4,6 +4,7 @@ import com.example.processing.Organization;
 import com.example.processing.partitioner.OrganizationsResourcePartitioner;
 import com.example.processing.processor.OrganizationProcessor;
 import com.example.processing.reader.OrganizationReader;
+import com.example.processing.tasklet.FileDeletingTasklet;
 import com.example.processing.writer.OrganizationWriter;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -15,6 +16,7 @@ import org.springframework.batch.core.launch.support.TaskExecutorJobLauncher;
 import org.springframework.batch.core.partition.support.Partitioner;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -49,6 +51,19 @@ public class DataProcessingConfiguration {
         return jobLauncher;
     }
 
+    @Bean
+    public Tasklet fileDeletingTasklet() {
+        return new FileDeletingTasklet(DATA_PROCESSING_DESTINATION_FOLDER_PATH);
+    }
+
+
+    @Bean("fileDeletingStep")
+    public Step fileDeletingStep(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
+        return new StepBuilder("fileDeletingStep", jobRepository)
+                .tasklet(fileDeletingTasklet(), transactionManager)
+                .build();
+    }
+
     @Bean("processingStep")
     public Step processingStep(JobRepository jobRepository, PlatformTransactionManager platformTransactionManager, OrganizationReader reader, OrganizationProcessor processor, OrganizationWriter writer) {
         return new StepBuilder("processingStep", jobRepository)
@@ -59,10 +74,10 @@ public class DataProcessingConfiguration {
                 .build();
     }
 
-    @Bean("mainStep")
+    @Bean("partitionedProcessingStep")
     public Step mainStep(JobRepository jobRepository, @Qualifier("processingStep") Step processingStep) {
-        return new StepBuilder("mainStep", jobRepository)
-                .partitioner("mainStep", partitioner())
+        return new StepBuilder("partitionedProcessingStep", jobRepository)
+                .partitioner("partitionedProcessingStep", partitioner())
                 .gridSize(DATA_PROCESSING_PARTITIONS_NUMBER)
                 .step(processingStep)
                 .taskExecutor(taskExecutor())
@@ -70,11 +85,11 @@ public class DataProcessingConfiguration {
     }
 
     @Bean("processingJob")
-    public Job processingJob(JobRepository jobRepository, @Qualifier("mainStep") Step step) {
+    public Job processingJob(JobRepository jobRepository, @Qualifier("partitionedProcessingStep") Step partitionedProcessingStep, @Qualifier("fileDeletingStep") Step fileDeletingStep) {
         return new JobBuilder("processingJob", jobRepository)
                 .incrementer(new RunIdIncrementer())
-                .flow(step)
-                .end()
+                .start(fileDeletingStep)
+                .next(partitionedProcessingStep)
                 .build();
     }
 }
