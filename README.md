@@ -1,8 +1,8 @@
-# spring-batch-file-processing
+## spring-batch-file-processing
 
 Sample project to play with processing large text files using Spring Batch
 
-# Task description
+## Task description
 
 The task of batch massive sequential data processing occurs in many enterprises: data migrations, data convertings, data transformations and so on.
 Additionally, there could be a requirement to process data in less time and less resources, meaning the paginated 'read'
@@ -12,19 +12,24 @@ Here comes Spring framework with capabilities of creating batch jobs and  organi
 pipelines. Spring Batch has enough ready-to-use implementations for Readers, Processors, and Writers, and provides flexible
 customization capabilities.
 
-# Spring Batch framework
+## Spring Batch framework
 
 Spring Batch is a processing framework for building reliable batch jobs. Spring Batch, as the name implies is a batch 
 application framework. Following functions are offered based on DI container of Spring, AOP and transaction control function.
 
-# Step
+## Step
 
 The step is a common term that is intended for handling 1 batch task. A job can have more than one step executing them one after another.
 
 `Step` interface is a root for all the steps and the implementations are: `FlowStep`, `PartitionStep`, `JobStep`, `TaskletStep`.
 The implementation of a Step defines a kind of task whether it is singe or repeated, transitioned, partitioned, chunked, or custom.
+A Step is tightly coupled to the `StepExecution` domain entity that represents a step execution with job execution, status,
+read count, write count, start time, end time, exit status, and other properties. A Step can be configured using the `StepBuilder`,
+which chooses an implementation at runtime looking at given params.
 
-- TaskletStep works based on a `Tasklet`. A Tasklet runs only 1 task (single or possibly repeated), and each call surrounded
+#### TaskletStep
+
+TaskletStep works based on a `Tasklet`. A Tasklet runs only 1 task (single or possibly repeated), and each call surrounded
 by a transaction. This kind of step is used more frequently because of its nature of transaction calls controlled on a Step level. 
 
 A Tasklet can be customized/extended to run custom logic, and there are existing Tasklet implementations created for general-purpose tasks, 
@@ -35,24 +40,30 @@ such as ChunkOrientedTasklet implementing chunk-oriented variations on read-proc
 * writers implement the `ItemWriter` interface intended to write/push/send data to some file/database/queue: `JsonFileItemWriter`, `FlatFileItemWriter`, `MultiResourceItemWriter`, `CompositeItemWriter`;
 
 The diagram for TaskletStep that uses ChunkOrientedTasklet:
-<p align="center"><img src="img/tasklet-step-using-chunk-oriented-tasklet.png" width="600px"/></p>
+<p align="center"><img src="img/tasklet-step-using-chunk-oriented-tasklet.png" width="800px"/></p>
 
-- PartitionStep divides the step execution on fixed number of partitions and spreads the load using a `PartitionHandler` (TaskExecutorPartitionHandler).
+
+#### PartitionStep
+
+PartitionStep divides the step execution on fixed number of partitions and spreads the load using a `PartitionHandler` (TaskExecutorPartitionHandler).
 Every partition represents a single task that is running in parallel to other partitions.
 The diagram for PartitionStep:
 
-![Partition step](img/partition-step-overview.png) ![Partition handler](img/partition-step-partition-handler.png)
+<p float="center">
+  <img src="img/partition-step-overview.png" width="600px" />
+  <img src="img/partition-step-partition-handler.png" width="518px" /> 
+</p>
 
-- FlowStep delegates its work to a `Flow`. It is useful for logical grouping of steps, and especially for partitioning 
+#### FlowStep
+
+FlowStep delegates its work to a `Flow`. It is useful for logical grouping of steps, and especially for partitioning 
 with multiple steps per execution.
 
-- JobStep delegates to a `Job` to do its work. It is useful for managing dependencies between jobs, and also to modularise
+#### JobStep
+
+JobStep delegates to a `Job` to do its work. It is useful for managing dependencies between jobs, and also to modularise
 complex step logic into something that is testable in isolation.
 
-A Step is tightly coupled to the `StepExecution` domain entity that represents a step execution with job execution, status,
-read count, write count, start time, end time, exit status, and other properties.
-
-A Step can be configured using the `StepBuilder`, which chooses an implementation at runtime looking at given params.
 
 # Job
 
