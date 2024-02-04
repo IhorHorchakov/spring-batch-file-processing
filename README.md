@@ -40,7 +40,7 @@ such as ChunkOrientedTasklet implementing chunk-oriented variations on read-proc
 * writers implement the `ItemWriter` interface intended to write/push/send data to some file/database/queue: `JsonFileItemWriter`, `FlatFileItemWriter`, `MultiResourceItemWriter`, `CompositeItemWriter`;
 
 The diagram for TaskletStep that uses ChunkOrientedTasklet:
-<p align="center"><img src="img/tasklet-step-using-chunk-oriented-tasklet.png" width="800px"/></p>
+<p align="center"><img src="img/tasklet-step-using-chunk-oriented-tasklet.png" width="700px"/></p>
 
 
 #### PartitionStep
@@ -50,8 +50,8 @@ Every partition represents a single task that is running in parallel to other pa
 The diagram for PartitionStep:
 
 <p float="center">
-  <img src="img/partition-step-overview.png" width="600px" />
-  <img src="img/partition-step-partition-handler.png" width="518px" /> 
+  <img src="img/partition-step-overview.png" width="400px" />
+  <img src="img/partition-step-partition-handler.png" width="400px" /> 
 </p>
 
 #### FlowStep
