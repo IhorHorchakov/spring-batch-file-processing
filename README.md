@@ -40,8 +40,8 @@ The diagram for TaskletStep that uses ChunkOrientedTasklet:
 - PartitionStep divides the step execution on fixed number of partitions and spreads the load using a `PartitionHandler` (TaskExecutorPartitionHandler).
 Every partition represents a single task that is running in parallel to other partitions.
 The diagram for PartitionStep:
-<p align="left"><img src="img/partition-step-overview.png" width="300px"/></p>
-<p align="right"><img src="img/partition-step-partition-handler.png" width="300px"/></p>
+
+![Partition step](img/partition-step-overview.png) ![Partition handler](img/partition-step-partition-handler.png)
 
 - FlowStep delegates its work to a `Flow`. It is useful for logical grouping of steps, and especially for partitioning 
 with multiple steps per execution.
