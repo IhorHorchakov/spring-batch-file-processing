@@ -63,7 +63,7 @@ with multiple steps per execution.
 JobStep delegates to a `Job` to do its work. It is useful for managing dependencies between jobs, and also to modularise
 complex step logic into something that is testable in isolation.
 
-# Job
+### Job
 
 The `Job` is an abstraction to represent a multi-steps processing. Job contains multiple steps and runs step execution sequentially in a loop.
 Any step that fails will fail the job. The job is considered complete when all steps have been executed.
@@ -77,7 +77,7 @@ meter registry.
 Here is a diagram of a Job that is using a TaskletStep (ChunkOrientedTasklet):
 <p align="center"><img src="img/job-with-tasklet-step.png" width="600px"/></p>
 
-# JobRepository
+### JobRepository
 
 Spring Batch follows the traditional batch architecture where a Job works of interacting with the JobRepository. Spring Batch
 supports many features like restarting a failed batch, recording the status of the batch execution and so on. In order to
@@ -91,11 +91,11 @@ JobExecution and StepExecution. It is required by many of the major framework fe
 The diagram for how a Job is related to other components:
 <p align="center"><img src="img/spring-batch-components.png" width="600px"/></p>
 
-# TaskExecutor
+### TaskExecutor
 
 [TODO]
 
-# Bean scopes
+### Bean scopes
 
 **StepScope** 
 
