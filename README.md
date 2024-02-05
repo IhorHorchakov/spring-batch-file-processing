@@ -1,8 +1,8 @@
-## spring-batch-file-processing
+### spring-batch-file-processing
 
 Sample project to play with processing large text files using Spring Batch
 
-## Task description
+### Task description
 
 The task of batch massive sequential data processing occurs in many enterprises: data migrations, data convertings, data transformations and so on.
 Additionally, there could be a requirement to process data in less time and less resources, meaning the paginated 'read'
@@ -12,12 +12,12 @@ Here comes Spring framework with capabilities of creating batch jobs and  organi
 pipelines. Spring Batch has enough ready-to-use implementations for Readers, Processors, and Writers, and provides flexible
 customization capabilities.
 
-## Spring Batch framework
+### Spring Batch framework
 
 Spring Batch is a processing framework for building reliable batch jobs. Spring Batch, as the name implies is a batch 
 application framework. Following functions are offered based on DI container of Spring, AOP and transaction control function.
 
-## Step
+### Step
 
 The step is a common term that is intended for handling 1 batch task. A job can have more than one step executing them one after another.
 
@@ -42,7 +42,6 @@ such as ChunkOrientedTasklet implementing chunk-oriented variations on read-proc
 The diagram for TaskletStep that uses ChunkOrientedTasklet:
 <p align="center"><img src="img/tasklet-step-using-chunk-oriented-tasklet.png" width="700px"/></p>
 
-
 #### PartitionStep
 
 PartitionStep divides the step execution on fixed number of partitions and spreads the load using a `PartitionHandler` (TaskExecutorPartitionHandler).
@@ -63,7 +62,6 @@ with multiple steps per execution.
 
 JobStep delegates to a `Job` to do its work. It is useful for managing dependencies between jobs, and also to modularise
 complex step logic into something that is testable in isolation.
-
 
 # Job
 
@@ -99,22 +97,22 @@ The diagram for how a Job is related to other components:
 
 # Bean scopes
 
-StepScope 
+**StepScope** 
 
-The step scope is designed for beans that should be lazily instantiated at runtime when the step is executed. By default, for interface based beans, Spring will create JDK dynamic proxies, and for classes it will use CGLib.
-A spring batch StepScope object is one which is unique to a specific step and not a singleton. As you probably know, the 
-default bean scope in Spring is a singleton. 
+The StepScope is designed for beans that should be lazily instantiated at runtime when the step is executed. By default, 
+for interface based beans, Spring will create JDK dynamic proxies, and for classes it will use CGLib.
 
-But by specifying a spring batch component being StepScope means that Spring Batch will use the spring container to instantiate
+A spring batch StepScope object is one which is unique to a specific step and not a singleton. But by specifying a 
+spring batch component being StepScope means that Spring Batch will use the spring container to instantiate
 a new instance of that component for each step execution.
 This is often useful for doing parameter late binding where a parameter may be specified either at the StepContext or the
-JobExecutionContext level and needs to be substituted for a placeholder, much like your example with the filename requirement.
+JobExecutionContext level and needs to be substituted for a placeholder, much like this example with the filename requirement.
 
 Another useful reason to use StepScope is when you decide to reuse the same component in parallel steps. If the component
 manages any internal state, its important that it be StepScope based so that one thread does not impair the state managed
 by another thread (e.g, each thread of a given step has its own instance of the StepScope component).
 
-JobScope
+**JobScope**
 
 [TODO]
 
