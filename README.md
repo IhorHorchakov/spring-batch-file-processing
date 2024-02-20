@@ -88,7 +88,7 @@ achieve that Spring uses a database schema to store the status of the registered
 you the basic configuration of the required data source and it is this configuration that requires the relational database
 configuration.
 
-The JobRepository is used for basic CRUD operations of the various persisted domain objects within Spring Batch, such as
+The `JobRepository` is used for basic CRUD operations of the various persisted domain objects within Spring Batch, such as
 JobExecution and StepExecution. It is required by many of the major framework features, such as the JobLauncher, Job, and Step.
 
 The diagram for how a Job is related to other components:
