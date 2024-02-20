@@ -12,12 +12,14 @@ Here comes Spring framework with capabilities of creating batch jobs and  organi
 pipelines. Spring Batch has enough ready-to-use implementations for Readers, Processors, and Writers, and provides flexible
 customization capabilities.
 
-### Spring Batch framework
+### What is Spring Batch framework
 
 Spring Batch is a processing framework for building reliable batch jobs. Spring Batch, as the name implies is a batch 
-application framework. Following functions are offered based on DI container of Spring, AOP and transaction control function.
+application framework. Following functions are offered based on DI container of Spring, AOP and transaction control.
 
 ### Step
+<details open>
+<summary>Click to open/close</summary>
 
 The step is a common term that is intended for handling 1 batch task. A job can have more than one step executing them one after another.
 
@@ -62,6 +64,7 @@ with multiple steps per execution.
 
 JobStep delegates to a `Job` to do its work. It is useful for managing dependencies between jobs, and also to modularise
 complex step logic into something that is testable in isolation.
+</details>
 
 ### Job
 
@@ -91,18 +94,14 @@ JobExecution and StepExecution. It is required by many of the major framework fe
 The diagram for how a Job is related to other components:
 <p align="center"><img src="img/spring-batch-components.png" width="600px"/></p>
 
-### TaskExecutor
-
-[TODO]
-
 ### Bean scopes
 
 **StepScope** 
 
 The StepScope is designed for beans that should be lazily instantiated at runtime when the step is executed. By default, 
-for interface based beans, Spring will create JDK dynamic proxies, and for classes it will use CGLib.
+for interface-based beans, Spring will create JDK dynamic proxies, and for classes it will use CGLib.
 
-A spring batch StepScope object is one which is unique to a specific step and not a singleton. But by specifying a 
+A spring batch StepScope object is unique to a specific step and not a singleton. But by specifying a 
 spring batch component being StepScope means that Spring Batch will use the spring container to instantiate
 a new instance of that component for each step execution.
 This is often useful for doing parameter late binding where a parameter may be specified either at the StepContext or the
