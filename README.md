@@ -95,13 +95,15 @@ The diagram for how a Job is related to other components:
 <p align="center"><img src="img/spring-batch-components.png" width="600px"/></p>
 
 ### Bean scopes
+<details open>
+<summary>Click to open/close</summary>
 
 **StepScope** 
 
-The StepScope is designed for beans that should be lazily instantiated at runtime when the step is executed. By default, 
+The `StepScope` is designed for beans that should be lazily instantiated at runtime when the step is executed. By default, 
 for interface-based beans, Spring will create JDK dynamic proxies, and for classes it will use CGLib.
 
-A spring batch StepScope object is unique to a specific step and not a singleton. But by specifying a 
+A spring batch `StepScope` object is unique to a specific step and not a singleton. But by specifying a 
 spring batch component being StepScope means that Spring Batch will use the spring container to instantiate
 a new instance of that component for each step execution.
 This is often useful for doing parameter late binding where a parameter may be specified either at the StepContext or the
@@ -113,9 +115,18 @@ by another thread (e.g, each thread of a given step has its own instance of the 
 
 **JobScope**
 
-[TODO]
+Job scope means that a new instance of the bean is created for each batch job execution. 
 
-# Useful links
+`JobScope` is useful for beans that need to share some state or configuration among different steps or threads within 
+the same job. For example, if you use a job-scoped item reader or writer, you can pass some parameters or context 
+information from one step to another, or from one thread to another, within the same job. 
+
+However, job scope can also cause concurrency and transaction issues if the bean has any state that can be modified by
+multiple threads or steps within the same job.
+
+</details>
+
+### Useful links
 
 https://docs.spring.io/spring-batch/reference/index.html
 
