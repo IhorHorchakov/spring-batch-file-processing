@@ -1,7 +1,6 @@
 package org.example.spring.webflux.service;
 
 import org.example.spring.webflux.repository.ReactiveRecordRepository;
-import org.example.spring.webflux.repository.entity.RecordEntity;
 import org.example.spring.webflux.service.converter.RecordConverter;
 import org.example.spring.webflux.service.dto.RecordDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +28,10 @@ public class RecordService {
         return repository.findAll().map(converter::toRecordDto);
     }
 
-    public Mono<RecordEntity> save(RecordDto dto) {
+    public Mono<RecordDto> save(RecordDto dto) {
         Objects.requireNonNull(dto);
         Objects.requireNonNull(dto.getId());
-        RecordEntity entity = converter.toRecordEntity(dto);
-        return repository.save(entity);
+        repository.save(converter.toRecordEntity(dto));
+        return Mono.just(dto);
     }
 }
