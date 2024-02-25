@@ -1,137 +1,52 @@
-### spring-batch-file-processing
 
-Sample project to play with processing large text files using Spring Batch
 
-### Task description
+https://www.reactive-streams.org/
+https://github.com/reactive-streams/reactive-streams-jvm
 
-The task of batch massive sequential data processing occurs in many enterprises: data migrations, data convertings, data transformations and so on.
-Additionally, there could be a requirement to process data in less time and less resources, meaning the paginated 'read'
-and parallel 'processing' / 'write' operations are used.
+https://github.com/reactor/reactor (implements Reactive Streams specification)
 
-Here comes Spring framework with capabilities of creating batch jobs and  organizing read/process/write operations in parallel
-pipelines. Spring Batch has enough ready-to-use implementations for Readers, Processors, and Writers, and provides flexible
-customization capabilities.
+https://gokhana.dev/spring-reactive-mongodb-implementation/
+https://www.bezkoder.com/spring-boot-r2dbc-postgresql/
 
-### What is Spring Batch framework
+### What is reactive programming
 
-Spring Batch is a processing framework for building reliable batch jobs. Spring Batch, as the name implies is a batch 
-application framework. Following functions are offered based on DI container of Spring, AOP and transaction control.
+Reactive programming is a programming paradigm. It’s actually been around for a while. Just like object-oriented programming, functional programming, or procedural programming, reactive programming is another programming paradigm.
+The term, “reactive,” refers to programming models that are built around reacting to change network components reacting to I/O events, UI controllers reacting to mouse events, and others. In that sense, non-blocking is reactive, because, instead of being blocked, we are now in the mode of reacting to notifications as operations complete or data becomes available.
 
-### Step
-<details open>
-<summary>Click to open/close</summary>
+There is also another important mechanism that we on the Spring team associate with “reactive” and that is non-blocking back pressure. In synchronous, imperative code, blocking calls serve as a natural form of back pressure that forces the caller to wait. In non-blocking code, it becomes important to control the rate of events so that a fast producer does not overwhelm its destination.
+For example a data repository (acting as Publisher) can produce data that an HTTP server (acting as Subscriber) can then write to the response. The main purpose of Reactive Streams is to let the subscriber control how quickly or how slowly the publisher produces data.
 
-The step is a common term that is intended for handling 1 batch task. A job can have more than one step executing them one after another.
+Paradigm is defined by Reactive Manifesto https://reactivemanifesto.org/
 
-`Step` interface is a root for all the steps and the implementations are: `FlowStep`, `PartitionStep`, `JobStep`, `TaskletStep`.
-The implementation of a Step defines a kind of task whether it is singe or repeated, transitioned, partitioned, chunked, or custom.
-A Step is tightly coupled to the `StepExecution` domain entity that represents a step execution with job execution, status,
-read count, write count, start time, end time, exit status, and other properties. A Step can be configured using the `StepBuilder`,
-which chooses an implementation at runtime looking at given params.
+### Reactive Streams specification
 
-#### TaskletStep
+Reactive Streams is a specification https://www.reactive-streams.org/
 
-TaskletStep works based on a `Tasklet`. A Tasklet runs only 1 task (single or possibly repeated), and each call surrounded
-by a transaction. This kind of step is used more frequently because of its nature of transaction calls controlled on a Step level. 
+For Java programmers, Reactive Streams is an API. It is the product of a collaboration between engineers from Kaazing, Netflix, Pivotal, Red Hat, Twitter, Typesafe, and many others. Reactive Streams is much like JPA or JDBC. Both are API specifications.
 
-A Tasklet can be customized/extended to run custom logic, and there are existing Tasklet implementations created for general-purpose tasks, 
-such as ChunkOrientedTasklet implementing chunk-oriented variations on read-process-write handling.
+The Reactive Streams API consists of just 4 high interfaces.
 
-* readers implement the `ItemReader` interface intended to read/retrieve/load data for further handling. There are many useful implementations: `FlatFileItemReader`, `JsonItemReader`, `JdbcPagingItemReader`, `MongoItemReader`;
-* processors implement the `ItemProcessor` interface intended to process/transform/convert data: `CompositeItemProcessor`, `FunctionItemProcessor`, `ValidatingItemProcessor`;
-* writers implement the `ItemWriter` interface intended to write/push/send data to some file/database/queue: `JsonFileItemWriter`, `FlatFileItemWriter`, `MultiResourceItemWriter`, `CompositeItemWriter`;
+`Publisher` : A publisher is a provider of a potentially unbounded number of sequenced elements, publishing them according to the demand received from its Subscribers.
+`Subscriber` : Will receive call to Subscriber.onSubscribe(Subscription) once after passing an instance of Subscriber to Publisher. subscribe(Subscriber).
+`Subscription` : A Subscription represents a one-to-one lifecycle of a Subscriber subscribing to a Publisher.
+`Processor` : A Processor represents a processing stage—which is both a Subscriber and a Publisher and obeys the contracts of both.
+These concepts take different manifestations at different levels and areas. For eg. A java dev could think about how to program his at the application level, a database engineer could think how a database could react to reactive API calls (For example, Mongo DB has implemented a Reactive Streams driver), a network programmer could think how reactive calls could be made effective at the network level.
 
-The diagram for TaskletStep that uses ChunkOrientedTasklet:
-<p align="center"><img src="img/tasklet-step-using-chunk-oriented-tasklet.png" width="700px"/></p>
+Some of the JVM-based frameworks that follow the Reactive Streams spec are:
 
-#### PartitionStep
+1. Akka Streams framework
+2. Ratpack
+3. Vert.x
+4. ReactiveX (RxJava 2.0, Reactor)
+5. Java 1.9 Flow classes
 
-PartitionStep divides the step execution on fixed number of partitions and spreads the load using a `PartitionHandler` (TaskExecutorPartitionHandler).
-Every partition represents a single task that is running in parallel to other partitions.
-The diagram for PartitionStep:
+**ReactiveX** is a combination of the best ideas from the Observer pattern, the Iterator pattern, and functional programming. It extends the observer pattern to support sequences of data and/or events and adds operators that allow you to compose sequences together declaratively while abstracting away concerns about things like low-level threading, synchronization, thread-safety, concurrent data structures, and non-blocking I/O.
 
-<p float="center">
-  <img src="img/partition-step-overview.png" width="400px" />
-  <img src="img/partition-step-partition-handler.png" width="400px" /> 
-</p>
+**RxJava 2.0** and **Reactor** are based on ReactiveX project. And Spring WebFlux uses Reactor internally.
 
-#### FlowStep
 
-FlowStep delegates its work to a `Flow`. It is useful for logical grouping of steps, and especially for partitioning 
-with multiple steps per execution.
+### Why was Spring WebFlux created?
 
-#### JobStep
+- the need for a non-blocking web stack to handle concurrency with a small number of threads and scale with fewer hardware resources. Servlet non-blocking I/O leads away from the rest of the Servlet API, where contracts are synchronous (Filter, Servlet) or blocking (getParameter, getPart). This was the motivation for a new common API to serve as a foundation across any non-blocking runtime. That is important because of servers (such as Netty) that are well-established in the async, non-blocking space.
 
-JobStep delegates to a `Job` to do its work. It is useful for managing dependencies between jobs, and also to modularise
-complex step logic into something that is testable in isolation.
-</details>
-
-### Job
-
-The `Job` is an abstraction to represent a multi-steps processing. Job contains multiple steps and runs step execution sequentially in a loop.
-Any step that fails will fail the job. The job is considered complete when all steps have been executed.
-
-A Job is tightly coupled to the `JobExecution` domain entity that represents a job execution with job params, status, 
-exit status, start time, end time, and other properties.
-
-A Job can be created using the `JobBuilder` with additional properties such as listener, incrementer, job repository, 
-meter registry.
-
-Here is a diagram of a Job that is using a TaskletStep (ChunkOrientedTasklet):
-<p align="center"><img src="img/job-with-tasklet-step.png" width="600px"/></p>
-
-### JobRepository
-
-Spring Batch follows the traditional batch architecture where a Job works of interacting with the JobRepository. Spring Batch
-supports many features like restarting a failed batch, recording the status of the batch execution and so on. In order to
-achieve that Spring uses a database schema to store the status of the registered jobs, the auto-configuration already provides
-you the basic configuration of the required data source and it is this configuration that requires the relational database
-configuration.
-
-The `JobRepository` is used for basic CRUD operations of the various persisted domain objects within Spring Batch, such as
-JobExecution and StepExecution. It is required by many of the major framework features, such as the JobLauncher, Job, and Step.
-
-The diagram for how a Job is related to other components:
-<p align="center"><img src="img/spring-batch-components.png" width="600px"/></p>
-
-### Bean scopes
-<details open>
-<summary>Click to open/close</summary>
-
-**StepScope** 
-
-The `StepScope` is designed for beans that should be lazily instantiated at runtime when the step is executed. By default, 
-for interface-based beans, Spring will create JDK dynamic proxies, and for classes it will use CGLib.
-
-A spring batch `StepScope` object is unique to a specific step and not a singleton. But by specifying a 
-spring batch component being StepScope means that Spring Batch will use the spring container to instantiate
-a new instance of that component for each step execution.
-This is often useful for doing parameter late binding where a parameter may be specified either at the StepContext or the
-JobExecutionContext level and needs to be substituted for a placeholder, much like this example with the filename requirement.
-
-Another useful reason to use StepScope is when you decide to reuse the same component in parallel steps. If the component
-manages any internal state, its important that it be StepScope based so that one thread does not impair the state managed
-by another thread (e.g, each thread of a given step has its own instance of the StepScope component).
-
-**JobScope**
-
-Job scope means that a new instance of the bean is created for each batch job execution. 
-
-`JobScope` is useful for beans that need to share some state or configuration among different steps or threads within 
-the same job. For example, if you use a job-scoped item reader or writer, you can pass some parameters or context 
-information from one step to another, or from one thread to another, within the same job. 
-
-However, job scope can also cause concurrency and transaction issues if the bean has any state that can be modified by
-multiple threads or steps within the same job.
-
-</details>
-
-### Useful links
-
-https://docs.spring.io/spring-batch/reference/index.html
-
-https://www.baeldung.com/spring-batch-tasklet-chunk
-
-https://github.com/spring-projects/spring-batch/tree/main/spring-batch-samples
-
-https://levelup.gitconnected.com/10-handy-spring-batch-tricks-24556cf549a4?gi=c014466aa899
+- the need for functional programming. Much as the addition of annotations in Java 5 created opportunities (such as annotated REST controllers or unit tests), the addition of lambda expressions in Java 8 created opportunities for functional APIs in Java. This is a boon for non-blocking applications and continuation-style APIs (as popularized by CompletableFuture and ReactiveX) that allow declarative composition of asynchronous logic. At the programming-model level, Java 8 enabled Spring WebFlux to offer functional web endpoints alongside annotated controllers.

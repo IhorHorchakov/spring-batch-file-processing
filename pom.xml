@@ -11,11 +11,15 @@
     </parent>
 
     <groupId>com.example</groupId>
-    <artifactId>spring-batch-file-processing</artifactId>
+    <artifactId>spring-webflux-record-processing</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>war</packaging>
-    <name>spring-batch-file-processing</name>
-    <description>Processing big text files with Spring Batch</description>
+    <packaging>pom</packaging>
+    <name>spring-webflux-record-processing</name>
+    <description>Processing data with Spring WebFlux</description>
+    <modules>
+        <module>record-storage</module>
+        <module>record-manager</module>
+    </modules>
     <properties>
         <java.version>17</java.version>
         <maven.compiler.source>17</maven.compiler.source>
@@ -23,34 +27,10 @@
     </properties>
 
     <dependencies>
-<!--        <dependency>-->
-<!--            <groupId>org.springframework.boot</groupId>-->
-<!--            <artifactId>spring-boot-starter-web</artifactId>-->
-<!--            <exclusions>-->
-<!--                <exclusion>-->
-<!--                    <groupId>ch.qos.logback</groupId>-->
-<!--                    <artifactId>logback-classic</artifactId>-->
-<!--                </exclusion>-->
-<!--            </exclusions>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-batch</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.h2database</groupId>
-            <artifactId>h2</artifactId>
-            <version>2.2.224</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.16.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+            <version>3.2.2</version>
         </dependency>
         <!--	Test dependencies -->
         <dependency>
